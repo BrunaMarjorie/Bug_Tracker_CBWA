@@ -1,26 +1,22 @@
 const db = require('../db')();
+const COLLECTION = 'users';
 
-module.exports = () => {
+module.exports = async () => {
     const get = (id = null) => {
         console.log('   inside users');
-        if(!id){
-            return db.users;
-
-        }else if(parseInt(id) > db.users.length){
-            return {error: true};
-        }
-
-        return db.users[parseInt(id) - 1];        
+        const users = await db.get(COLLECTION);
+        return users;        
     }
 
-    const add = (name, email, usertype) => {
-        return  db.users.push({
-            id: db.users.length + 1, 
-            name, 
-            email, 
-            usertype,
-        });  
-    }
+    const add = async (name, email, usertype) => {
+        const results = await db.add(COLLECTION, {
+            name: name,
+            email: email,
+            usertype: usertype
+        });
+        
+        return  results.result;
+    };
 
     return {
         get,

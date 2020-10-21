@@ -1,4 +1,5 @@
 const db = require('../db')();
+const COLLECTION = 'issues';
 
 module.exports = () => {
     const get = (id = null) => {

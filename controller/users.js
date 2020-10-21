@@ -2,29 +2,28 @@ const users = require('../model/users.js')();
 
 module.exports = () => {
 
-    const getController = (req, res) => {
-        res.setHeader('Content-Type', 'Application/json');
-        return res.json(users.get());
+    const getController = async (req, res) => {
+        res.json(await users.get());
     }
 
-    const getByID = (req, res) => {
-        res.setHeader('Content-Type', 'Application/json');
-        const result = users.get(req.params.id);
+    const getByID = async (req, res) => {
+       /* const result = users.get(req.params.id);
         if(result.error){
             res.status(404).json({
                 error: "Invalid ID"
             });
-        }
-        return res.json(users.get(req.params.id));
+        }*/
+        res.json({error: 'not implemented.'});
     }
 
-    const postController = (req, res) => {
-        let name = req.body.name;
-        let email = req.body.email;
-        let usertype = req.body.usertype;
+    const postController = async (req, res) => {
+        const name = req.body.name;
+        const email = req.body.email;
+        const usertype = req.body.usertype;
         console.log('  inside post users');
-        users.add(name, email, usertype);
-        return res.end(`POST: ${name}, ${email}, ${usertype}`);
+        const result = await users.add(name, email, usertype);
+        res.json(result);
+        res.end(`POST: ${name}, ${email}, ${usertype}`);
     }  
 
     return {
