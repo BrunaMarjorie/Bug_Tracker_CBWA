@@ -1,27 +1,23 @@
 const projects = require('../controller/projects');
+const COLLECTION = 'projects';
 
 const db = require('../db')();
 
 module.exports = () => {
-    const get = (id = null) => {
+    const get = async () => {
         console.log('   inside projects');
-        if(!id){
-            return db.projects;
-        
-        }else if(parseInt(id) > db.projects.length){
-            return {error: true};
-        }
-
-        return db.projects[parseInt(id) - 1];        
+        const projects = await db.get(COLLECTION);
+        return projects;       
     }
 
-    const add = (slug, name, description) => {
-        return  db.projects.push({
-            id: db.projects.length + 1, 
-            slug, 
-            name, 
-            description,
-        });  
+    const add = async (slug, name, description) => {
+        const results = await db.add(COLLECTION, {
+            slug: slug,
+            name: name,
+            description: description
+        });
+        
+        return  results.result;  
     }
 
     return {

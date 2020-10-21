@@ -1,8 +1,8 @@
 const db = require('../db')();
 const COLLECTION = 'users';
 
-module.exports = async () => {
-    const get = (id = null) => {
+module.exports = () => {
+    const get = async () => {
         console.log('   inside users');
         const users = await db.get(COLLECTION);
         return users;        
