@@ -30,6 +30,12 @@ app.get('/issues', issuesController.getController);
 app.get('/issues/:id', issuesController.getByID);
 app.post('/issues', issuesController.postController);
 
+app.get('/', (req, res) => {
+    return res.json({
+        message: 'Welcome to Bug Tracker!'
+    });
+});
+
 app.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`)
 });

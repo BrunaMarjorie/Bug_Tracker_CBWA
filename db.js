@@ -1,22 +1,38 @@
+const uri = process.env.MONGO_URI;
+const MongoClient = require ('mongodb').MongoClient;
+const DB_NAME  = 'bug-tracker';
+
 module.exports = () => {
-    const projects = [
-        {id: 1, slug: 'STORE', name: 'bookstore', description: 'collection of books and authors.'},
-        {id: 2, slug: 'TRACKER', name: 'bugtracker', description: 'api to track bugs in projects.'},
-    ];
+    
+    const get = (collectionName) => {
+        return new Promise((resolve, reject) => {
+            MongoClient.connect(uri, {useNewUrlParser: true}, (err, client) => {
+                const db = client.db(DB_NAME);
+                const collection = db.collection(collectionName);
+                collection.find({}).toArray((err, docs) => {
+                    resolve(docs);
+                    client.close();
+                });
+            });
+        });
+    };
 
-    const users = [
-        {id: 1, name: 'Bruna Santana', email: 'brunamarjorie@gmail.com', usertype: 'admin'},
-        {id: 2, name: 'Dave Albert', email: 'dalbert@cct.ie', usertype: 'user'}
-    ];
-
-    const issues = [
-        {id: 1, issueNumber: 'STORE-1', title: 'store issue', description: 'lala'},
-        {id: 2, issueNumber: 'TRACKER-1', title: 'tracker issue', description: 'lala'}
-    ];
+    const add = (collectionName, item) => {
+        return new Promise ((resolve, reject) => {
+            MongoClient.connect(uri, {useNewUrlParser: true}, (err, client) => {
+                const db = client.db(DB_NAME);
+                const collection = db.collection(collectionName);
+                
+                collection.insertOne(item, (err, result) => {
+                    resolve(result);
+                })
+                
+            });
+        });
+    };
 
     return {
-        projects,
-        users,
-        issues,
+        get,
+        add,
     };
 };
