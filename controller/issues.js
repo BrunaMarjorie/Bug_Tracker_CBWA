@@ -1,3 +1,4 @@
+const projects = require('../model/projects.js')();
 const issues = require('../model/issues.js')();
 
 module.exports = () => {
@@ -6,29 +7,33 @@ module.exports = () => {
         res.json(await issues.get());
     }
 
-    const getByID = async (req, res) => {
-        /*const result = issues.get(req.params.id);
-        if(result.error){
-            res.status(404).json({
-                error: "Invalid ID"
-            });
-        }*/
-        res.json({error: 'not implemented.'});
+    const getByIssueNumber = async (req, res) => {
+        res.json(await issues.get(req.params.issueNumber));
+    }
+
+    const putController = async (req, res) => {
+        const status = req.body.status;
+        //const slug = req.params.slug;
+        const issueNumber = req.params.issueNumber;
+        console.log('  inside put issues');
+        const results = await issues.updateStatus(status, issueNumber);
+        res.end(`Update status: ${status}`);
     }
 
     const postController = async (req, res) => {
-        const name = req.body.name;
+        const slug = req.params.slug;
         const title = req.body.title;
         const description = req.body.description;
         console.log('  inside post issues');
-        const results = await issues.add(name, title, description);
-        res.end(`POST: ${name}, ${title}, ${description}`);
-       
+        const results = await issues.add(title, description, slug);
+        res.end(`POST: ${title}, ${description}`);
     }  
 
     return {
         getController,
-        getByID,
-        postController
+        getByIssueNumber,
+        postController,
+        putController,
+        
 }
 }

@@ -4,17 +4,15 @@ module.exports = () => {
 
     const getController = async (req, res) => {
         res.json( await projects.get());
-    }
+    };
 
-    const getByID = async (req, res) => {
-        /*const result = projects.get(req.params.id);
-        if(result.error){
-            res.status(404).json({
-                error: "Invalid ID"
-            });
-        }*/
-        res.json({error: 'not implemented.'});
-    }
+    const getBySlug = async (req, res) => {
+        res.json(await projects.get(req.params.slug));
+    };
+
+    const projectIssues = async (req, res) => {
+        res.json(await projects.aggregateWithIssues(req.params.slug));
+    };
 
     const postController = async (req, res) => {
         const slug = req.body.slug;
@@ -23,11 +21,12 @@ module.exports = () => {
         console.log('  inside post projects');
         const results = await projects.add(slug, name, description);
         res.end(`POST: ${slug}, ${name}, ${description}`);
-    }
+    };
 
     return {
         getController,
-        getByID,
+        getBySlug,
+        projectIssues,
         postController
 }
 }

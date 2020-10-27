@@ -19,16 +19,19 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.get('/projects', projectsController.getController);
-app.get('/projects/:id', projectsController.getByID);
+app.get('/projects/:slug', projectsController.getBySlug);
+app.get('/projects/:slug/issues', projectsController.projectIssues);
 app.post('/projects', projectsController.postController);
 
 app.get('/users', usersController.getController);
-app.get('/users/:id', usersController.getByID);
+app.get('/users/:email', usersController.getByEmail);
 app.post('/users', usersController.postController);
 
 app.get('/issues', issuesController.getController);
-app.get('/issues/:id', issuesController.getByID);
-app.post('/issues', issuesController.postController);
+app.get('/issues/:issueNumber', issuesController.getByIssueNumber);
+app.get('/projects/:slug/issues/:issueNumber', issuesController.getByIssueNumber);
+app.post('/projects/:slug/issues', issuesController.postController);
+app.put('/projects/:slug/issues/:issueNumber', issuesController.putController);
 
 app.get('/', (req, res) => {
     return res.json({

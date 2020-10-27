@@ -2,9 +2,13 @@ const db = require('../db')();
 const COLLECTION = 'users';
 
 module.exports = () => {
-    const get = async () => {
+    const get = async (email = null) => {
         console.log('   inside users');
-        const users = await db.get(COLLECTION);
+        if(!email){
+            const users = await db.get(COLLECTION);
+            return users; 
+        }
+        const users = await db.get(COLLECTION, {email});
         return users;        
     }
 
@@ -15,8 +19,9 @@ module.exports = () => {
             usertype: usertype
         });
         
-        return  results.result;
-    };
+        return results.results;
+
+    };    
 
     return {
         get,
