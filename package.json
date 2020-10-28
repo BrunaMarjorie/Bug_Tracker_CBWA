@@ -1,6 +1,6 @@
 {
   "name": "bug-tracker-api",
-  "version": "1.0.0",
+  "version": "12.18.3",
   "description": "CBWA project",
   "main": "index.js",
   "scripts": {
