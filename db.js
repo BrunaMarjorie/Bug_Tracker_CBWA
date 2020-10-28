@@ -93,11 +93,30 @@ module.exports = () => {
         });
     };
     
+    const findKeys = () => {
+        return new Promise ((resolve, reject) => {
+            MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
+                const db = client.db(DB_NAME);
+                const collection = db.collection('users');                    
+                collection.find({}).project({'key': 1, '_id': 0}).toArray((err, docs) => {               
+                    if (docs == null){
+                    resolve(null);
+                    client.close();
+                    } else{   
+                    resolve(docs);
+                    client.close(); 
+                }
+                });             
+            });    
+        });
+    };
+
     return {
         get,
         add,
         count,
         findProject,
+        findKeys,
         aggregate,
         updateIssueStatus, 
     };

@@ -1,6 +1,5 @@
-const COLLECTION = 'projects';
-
 const db = require('../db')();
+const COLLECTION = 'projects';
 
 module.exports = () => {
     const get = async (slug = null) => {

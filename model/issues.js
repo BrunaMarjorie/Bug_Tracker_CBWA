@@ -1,5 +1,3 @@
-const issues = require('../controller/issues');
-
 const db = require('../db')();
 const COLLECTION = 'issues';
 

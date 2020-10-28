@@ -1,4 +1,3 @@
-const projects = require('../model/projects.js')();
 const issues = require('../model/issues.js')();
 
 module.exports = () => {
