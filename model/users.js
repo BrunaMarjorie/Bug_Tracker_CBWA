@@ -10,7 +10,13 @@ module.exports = () => {
             return users; 
         }
             const users = await db.get(COLLECTION, {email});
-            return users;            
+            //check if user exists;
+            if(users.length != 0){
+                return users;
+
+            }else {
+                return null;
+            }               
     }
 
     const getByKey = async (key) => {
@@ -19,12 +25,13 @@ module.exports = () => {
             console.log(" 01: Missing key.");
             return null;        
         }
+            //look up and match user key;        
             const users = await db.findKeys();
-            console.log(key);
+
             for (i in users){
-                console.log(users[i].key);
                 if(bcrypt.compareSync(key, users[i].key)){
-                    return users[i];
+                    const user = users[i].email;
+                    return user;
                 }
             }
                 console.log(" 02: User not found.");

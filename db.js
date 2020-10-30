@@ -6,12 +6,12 @@ const DB_NAME  = 'bug-tracker';
 const MONGO_OPTIONS = { useUnifiedTopology: true, useNewUrlParser: true};
 
 module.exports = () => {
-    const count = (project_id) => {
+    const count = (collectionName, query = {}) => {
         return new Promise ((resolve, reject) => {
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
                 const db = client.db(DB_NAME);
-                const collection = db.collection('issues');                    
-                collection.countDocuments({"project_id": project_id}, (err, docs) => {
+                const collection = db.collection(collectionName);                    
+                collection.countDocuments(query, (err, docs) => {
                     resolve(docs);
                     client.close(); 
                 });             
@@ -53,7 +53,7 @@ module.exports = () => {
                 collection.updateOne({'issueNumber': issueNumber}, {$set: {'status': status}}, (err, result) => {
                     resolve(result);
                     client.close();
-                })            
+                });            
             });
         });
     };
@@ -75,12 +75,13 @@ module.exports = () => {
         });
     };
 
-    const findProject = (slug) => {
+    //find any general item;
+    const find = (collectionName, query = {}) => {
         return new Promise ((resolve, reject) => {
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
                 const db = client.db(DB_NAME);
-                const collection = db.collection('projects');                    
-                collection.findOne({"slug": slug}, (err, docs) => {
+                const collection = db.collection(collectionName);                    
+                collection.find(query, (err, docs) => {
                 if (docs == null){
                     resolve(null);
                     client.close();
@@ -93,12 +94,13 @@ module.exports = () => {
         });
     };
     
+    //find only for the users' keys;
     const findKeys = () => {
         return new Promise ((resolve, reject) => {
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
                 const db = client.db(DB_NAME);
                 const collection = db.collection('users');                    
-                collection.find({}).project({'key': 1, '_id': 0}).toArray((err, docs) => {               
+                collection.find({}).project({'key': 1, '_id': 0, 'email': 1}).toArray((err, docs) => {               
                     if (docs == null){
                     resolve(null);
                     client.close();
@@ -115,7 +117,7 @@ module.exports = () => {
         get,
         add,
         count,
-        findProject,
+        find,
         findKeys,
         aggregate,
         updateIssueStatus, 

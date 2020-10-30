@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const users = require('./model/users')();
+let userLogged = null;
 
 const hostname = '0.0.0.0';
 const port = process.env.PORT || 3000;
@@ -8,6 +9,7 @@ const port = process.env.PORT || 3000;
 const projectsController = require ('./controller/projects')();
 const usersController = require ('./controller/users')();
 const issuesController = require ('./controller/issues')();
+const commentsController = require ('./controller/comments')();
 
 const app = module.exports = express();
 
@@ -31,14 +33,16 @@ app.use(async (req, res, next) => {
         FailedAuthMessage.code = "01";
         return res.status(401).json(FailedAuthMessage);
     }
-    const user = await users.getByKey(key);
-   
-    if(!user){
+    userLogged = await users.getByKey(key);
+
+    if(!userLogged){
         console.log("   [%s] FAILED AUTHENTICATION -- %s, No user found", 
         new Date(), clientIp);
         FailedAuthMessage.code = "02";
         return res.status(401).json(FailedAuthMessage);
     }
+    //save the email logged;
+    req.user = userLogged;   
     next();
 });
 
@@ -53,11 +57,18 @@ app.get('/users', usersController.getController);
 app.get('/users/:email', usersController.getByEmail);
 app.post('/users', usersController.postController);
 
-app.get('/issues', issuesController.getController);
+app.get('/issues', issuesController.IssueComments);
 app.get('/issues/:issueNumber', issuesController.getByIssueNumber);
 app.get('/projects/:slug/issues/:issueNumber', issuesController.getByIssueNumber);
 app.post('/projects/:slug/issues', issuesController.postController);
 app.put('/projects/:slug/issues/:issueNumber', issuesController.putController);
+
+app.get('/comments', commentsController.getController);
+app.get('/comments/:author', commentsController.getByAuthor);
+app.get('/issues/:issueNumber/comments', commentsController.getByIssue);
+app.get('/issues/:issueNumber/comments/:id', commentsController.getById);
+app.post('/issues/:issueNumber/comments', commentsController.postController);
+
 
 app.get('/', (req, res) => {
     return res.json({

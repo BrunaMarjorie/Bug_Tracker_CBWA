@@ -9,21 +9,34 @@ module.exports = () => {
             return projects; 
         }
             const projects = await db.get(COLLECTION, {slug});
-            return projects;      
+            //check if the project exists;           
+            if(projects.length != 0){
+                return projects;
+
+            }else {
+                return null;
+            }      
     }
 
     const add = async (slug, name, description) => {
-        const results = await db.add(COLLECTION, {
+        //set slug in uppercase;
+        slug = slug.toUpperCase();
+        //check if slug is unique;
+        const valid = await db.find(COLLECTION, {slug});
+        if(!valid){
+            const results = await db.add(COLLECTION, {
             slug: slug,
             name: name,
             description: description
-        });
-        
-        return  results.result;  
+            });
+            return  results.result;
+        }
+            return null; 
     }
 
     const aggregateWithIssues = async (slug) => {
         const LOOKUP_ISSUES_PIPELINE = [
+            //filter the project;
             {   $match: {
                 'slug': slug,
             }},
