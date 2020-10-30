@@ -7,17 +7,18 @@ module.exports = () => {
         if(!issueNumber){
             const issues = await db.get(COLLECTION);
             return issues;
-        }
-        const issues = await db.get(COLLECTION, { issueNumber });
-        //check if the issue exists;           
-        if(issues.length != 0){
-            return issues;
-
         }else {
-            return null;
-        }           
+            const issues = await db.get(COLLECTION, { issueNumber });
+            //check if the issue exists;           
+            if(issues.length != 0){
+                return issues;
+                
+            }else {
+                return null;
+            }  
+        }         
     }
-
+    
     const add = async (title, description, slug) => {
         console.log( "   inside models issues");
         //look for the project_id using the slug;
@@ -31,20 +32,22 @@ module.exports = () => {
             project_id: project_id,         
             status: "open",
         });
-       
+        
         return  results.result;
     }
-
+    
     //update issue status;
     const updateStatus = async (status, issueNumber) => {
         console.log( "   inside put models issues");
         const results = await db.updateIssueStatus(issueNumber, status);
         return  results.result;
     }
-
+    
     const aggregateWithComments = async () => {
         const LOOKUP_COMMENTS_PIPELINE = [
-            {   $lookup: {
+            {   
+                $lookup: 
+                {
                     from: 'comments',
                     localField: 'issueNumber',
                     foreignField: 'issueNumber',
@@ -55,7 +58,7 @@ module.exports = () => {
         const issues = await db.aggregate(COLLECTION, LOOKUP_COMMENTS_PIPELINE);
         return issues;
     }
-
+    
     return {
         get,
         add,

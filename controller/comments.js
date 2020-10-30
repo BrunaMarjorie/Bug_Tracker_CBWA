@@ -2,11 +2,11 @@ const comments = require('../model/comments.js')();
 
 
 module.exports = () => {
-
+    
     const getController = async (req, res) => {
         res.json(await comments.get());
     }
-
+    
     const getById = async (req, res) => {
         const issueNumber = req.params.issueNumber;
         const id = parseInt(req.params.id);
@@ -21,7 +21,7 @@ module.exports = () => {
             res.json(result);
         }
     }
-
+    
     const getByAuthor = async (req, res) => {
         const issueNumber = null;
         const id = null;
@@ -37,7 +37,7 @@ module.exports = () => {
             res.json(result);
         }
     }
-
+    
     const getByIssue = async (req, res) => {
         const result = await comments.get(req.params.issueNumber);
         //check if the issue has comments;
@@ -50,7 +50,7 @@ module.exports = () => {
             res.json(result);
         }
     }
-
+    
     const postController = async (req, res) => {
         const issueNumber = req.params.issueNumber;
         const text = req.body.text;
@@ -59,15 +59,15 @@ module.exports = () => {
         }
         //call the logged user;
         const author = req.user;
-
+        
         //method starts only after all the items are passed;
         if(text){
-        console.log('  inside post comments');
-        const results = await comments.add(text, author, issueNumber);
-        res.end(`POST: ${text}`);
+            console.log('  inside post comments');
+            const results = await comments.add(text, author, issueNumber);
+            res.end(`POST: ${text}`);
         }
     }  
-   
+    
     return {
         getController,
         getByAuthor,

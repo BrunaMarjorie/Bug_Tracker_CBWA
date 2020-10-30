@@ -32,18 +32,21 @@ app.use(async (req, res, next) => {
         new Date(), clientIp);
         FailedAuthMessage.code = "01";
         return res.status(401).json(FailedAuthMessage);
+    }else{
+        
+        userLogged = await users.getByKey(key);
+        
+        if(!userLogged){
+            console.log("   [%s] FAILED AUTHENTICATION -- %s, No user found", 
+            new Date(), clientIp);
+            FailedAuthMessage.code = "02";
+            return res.status(401).json(FailedAuthMessage);
+        }else{    
+            //save the email logged;
+            req.user = userLogged;   
+            next();
+        }
     }
-    userLogged = await users.getByKey(key);
-
-    if(!userLogged){
-        console.log("   [%s] FAILED AUTHENTICATION -- %s, No user found", 
-        new Date(), clientIp);
-        FailedAuthMessage.code = "02";
-        return res.status(401).json(FailedAuthMessage);
-    }
-    //save the email logged;
-    req.user = userLogged;   
-    next();
 });
 
 app.use(bodyParser.json());

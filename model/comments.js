@@ -8,7 +8,7 @@ module.exports = () => {
         if(!issueNumber && !id && !author){
             const comments = await db.get(COLLECTION);
             return comments;
-
+            
         }else if (issueNumber && !id && !author){
             const comments = await db.get(COLLECTION, { issueNumber });
             //check if the issue has comments;           
@@ -35,8 +35,8 @@ module.exports = () => {
             }  
         }
     }
-
-   
+    
+    
     const add = async (text, author, issueNumber) => {
         console.log( "   inside models comments");
         const count = await db.count(COLLECTION, {issueNumber});
@@ -45,18 +45,18 @@ module.exports = () => {
             text: text,
             author: author,
             issueNumber: issueNumber,
-
+            
         });
-       
+        
         return  results.result;
     }
-
+    
     const updateStatus = async (status, issueNumber) => {
         console.log( "   inside put models issues");
         const results = await db.updateIssueStatus(issueNumber, status);
         return  results.result;
     }
-
+    
     
     return {
         get,

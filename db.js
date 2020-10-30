@@ -31,7 +31,7 @@ module.exports = () => {
             });
         });
     };
-
+    
     const add = (collectionName, item) => {
         return new Promise ((resolve, reject) => {
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
@@ -44,7 +44,7 @@ module.exports = () => {
             });
         });
     };
-
+    
     const updateIssueStatus = (issueNumber, status) => {
         return new Promise ((resolve, reject) => {
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
@@ -57,7 +57,7 @@ module.exports = () => {
             });
         });
     };
-
+    
     const aggregate = (collectionName, pipeline = []) => {
         return new Promise ((resolve, reject) => {
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
@@ -67,28 +67,30 @@ module.exports = () => {
                     if(err){
                         console.log("-----aggregate ERROR-----");
                         console.log(err);
-                    }
+                    }else {
                     resolve(docs);
                     client.close();
+                    }
                 })            
             });
         });
     };
-
+    
     //find any general item;
     const find = (collectionName, query = {}) => {
         return new Promise ((resolve, reject) => {
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
                 const db = client.db(DB_NAME);
                 const collection = db.collection(collectionName);                    
-                collection.find(query, (err, docs) => {
-                if (docs == null){
-                    resolve(null);
-                    client.close();
-                } else{   
-                    resolve(docs._id);
-                    client.close(); 
-                }
+                collection.find(query).toArray((err, docs) => {
+                    console.log(docs);
+                    if (docs.length === 0){
+                        resolve(null);
+                        client.close();
+                    } else{   
+                        resolve(docs[0]._id);
+                        client.close(); 
+                    }
                 });             
             });    
         });
@@ -102,17 +104,17 @@ module.exports = () => {
                 const collection = db.collection('users');                    
                 collection.find({}).project({'key': 1, '_id': 0, 'email': 1}).toArray((err, docs) => {               
                     if (docs == null){
-                    resolve(null);
-                    client.close();
+                        resolve(null);
+                        client.close();
                     } else{   
-                    resolve(docs);
-                    client.close(); 
-                }
+                        resolve(docs);
+                        client.close(); 
+                    }
                 });             
             });    
         });
     };
-
+    
     return {
         get,
         add,

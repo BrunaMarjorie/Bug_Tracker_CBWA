@@ -1,11 +1,11 @@
 const projects = require('../model/projects.js')();
 
 module.exports = () => {
-
+    
     const getController = async (req, res) => {
         res.json( await projects.get());
     };
-
+    
     const getBySlug = async (req, res) => {
         const result = await projects.get(req.params.slug);
         //check if the project exists
@@ -18,12 +18,12 @@ module.exports = () => {
             res.json(result);
         }
     };
-
-        //aggregating projects and their issues;
+    
+    //aggregating projects and their issues;
     const projectIssues = async (req, res) => {
         res.json(await projects.aggregateWithIssues(req.params.slug));
     };
-
+    
     const postController = async (req, res) => {
         const slug = req.body.slug;
         if (!slug){
@@ -39,20 +39,21 @@ module.exports = () => {
         }
         //method starts only after all the items are passed;
         if(slug && name && description){
-        console.log('  inside post projects');
-        const results = await projects.add(slug, name, description);
-        //check if SLUG is unique;
-        if(results != null){
-            res.end(`POST: ${slug}, ${name}, ${description}`);
+            console.log('  inside post projects');
+            const results = await projects.add(slug, name, description);
+            //check if SLUG is unique;
+            if(results != null){
+                res.end(`POST: ${slug}, ${name}, ${description}`);
+            }else {
+                res.end(`Error: ${slug} already exists.`);
+            }
         }
-        res.end(`Error: ${slug} already exists.`);
-    }
     };
-
+    
     return {
         getController,
         getBySlug,
         projectIssues,
         postController
-}
+    }
 }
