@@ -21,6 +21,7 @@ module.exports = () => {
     
     const add = async (title, description, slug) => {
         console.log( "   inside models issues");
+        slug = slug.toUpperCase();
         //look for the project_id using the slug;
         const project_id = await db.find('projects', {slug});
         //count how many issues for the project already exists;
