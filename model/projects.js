@@ -7,15 +7,18 @@ module.exports = () => {
         if(!slug){
             const projects = await db.get(COLLECTION);
             return projects; 
-        }
-        const projects = await db.get(COLLECTION, {slug});
-        //check if the project exists;           
-        if(projects.length != 0){
-            return projects;
-            
-        }else {
-            return null;
-        }      
+        }else{
+            //set slug in uppercase;
+            slug = slug.toUpperCase();
+            const projects = await db.get(COLLECTION, {slug});
+            //check if the project exists;           
+            if(projects.length != 0){
+                return projects;
+                
+            }else {
+                return null;
+            }  
+        }    
     }
     
     const add = async (slug, name, description) => {

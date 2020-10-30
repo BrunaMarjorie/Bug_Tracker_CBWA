@@ -39,7 +39,7 @@ module.exports = () => {
             res.send(`Key is missing.`);
         }
         //method starts only after all the items are passed;
-        if (name && email && usertype && hash){
+        if (name && email && usertype && key){
             const hash = bcrypt.hashSync(key, 10);
             console.log('  inside controller users');
             const result = await users.add(name, email, usertype, hash);
