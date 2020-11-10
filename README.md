@@ -2,7 +2,7 @@
 BUG_TRACKER_CBWA is an API developed to track bugs in projects, allowing users to insert their issues and comments.
 
 ## Table of contents
-* General info
+* [General info] (#general-info)
 * Screenshots
 * Technologies
 * Setup
@@ -19,12 +19,12 @@ This project is the result of my Cloud-based Web Application subject in college.
 Example screenshot
 
 ## Technologies
-Node - version 12.18.3
-Nodemon - version 2.0.6
-Express - version 4.17.1
-Body-parser - version 1.19.0
-Bcrypt - version 5.0.0
-Mongodb - version 3.6.2   
+* Node - version 12.18.3
+* Nodemon - version 2.0.6
+* Express - version 4.17.1
+* Body-parser - version 1.19.0
+* Bcrypt - version 5.0.0
+* Mongodb - version 3.6.2   
 
 ## Setup
 Describe how to install / setup your local environement / add link to demo version.
