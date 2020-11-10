@@ -11,7 +11,7 @@ BUG_TRACKER_CBWA is an API developed to track bugs in projects, allowing users t
 * Inspiration
 * Contact
 
-
+<a name="general-info"></a>
 ## General info
 This project is the result of my Cloud-based Web Application subject in college. 
 
