@@ -3,59 +3,102 @@ const issues = require('../model/issues.js')();
 module.exports = () => {
 
     const getController = async (req, res) => {
-        res.json(await issues.get());
+        const { issuesList, error } = await issues.get();
+        if (error) {
+            return res.status(500).json({ error })
+        } else {
+            res.json({ issues: issuesList });
+        }
     }
 
     const getByIssueNumber = async (req, res) => {
-        const result = await issues.get(req.params.issueNumber);
-        //check if the issue exists
-        if(result == null){
-            res.status(404).json({
-                error: 404,
-                message: 'Issue not found',
-            });
-        }else {
-            res.json(result);
+        try {
+            const issuesList = await issues.get(req.params.issueNumber);
+            //check if the issue exists
+            if (issuesList == null) {
+                res.status(404).json({
+                    error: 404,
+                    message: 'Issue not found',
+                });
+            } else {
+                res.json(issuesList);
+            }
+        } catch (ex) {
+            console.log("=== Exception issues::getByIssueNumber.");
+            return res.status(500).json({ error: ex })
         }
     }
 
     //aggregating issues and their comments;
     const IssueComments = async (req, res) => {
-        res.json(await issues.aggregateWithComments());
+        try {
+            const issuesList = await issues.aggregateWithComments();
+            //check if project exists
+            if (issuesList == null) {
+                res.status(404).json({
+                    error: 404,
+                    message: 'Issue not found',
+                });
+            } else {
+                res.json(issuesList);
+            }
+        } catch (ex) {
+            console.log("=== Exception issues::IssueComments.");
+            return res.status(500).json({ error: ex })
+        }
+
     };
 
     //update issue status;
     const putController = async (req, res) => {
-        const status = req.body.status;
-        if (!status){
-            res.send(`Status missing.`);
-        }
         const issueNumber = req.params.issueNumber;
-        console.log('  inside put issues');
-        //method starts only after the status is passed;
-        if(status){
-        const results = await issues.updateStatus(status, issueNumber);
-        res.end(`Update status: ${status}`);
-        }
-    }
+        const slug = req.params.slug;
+        const status = req.body.status;
+        if (!status) {
+            res.send(`Status missing.`);
+        } else {
+            console.log('  inside put issues');
+            //method starts only after the status is passed;
+            try {
+                const results = await issues.updateStatus(status, slug, issueNumber);
+                //check if project and issue exists
+                if (results == null) {
+                    res.status(404).json({
+                        error: 404,
+                        message: 'Issue or Project not found',
+                    });
+                } else {
+                    res.end(`Update status: ${status}`);
+                }
+            } catch (ex) {
+                console.log("=== Exception issues::putController.");
+                return res.status(500).json({ error: ex })
+            };
+        };
+    };
 
     const postController = async (req, res) => {
         const slug = req.params.slug;
         const title = req.body.title;
-        if (!title){
+        if (!title) {
             res.send(`Title is missing.`);
         }
         const description = req.body.description;
-        if (!description){
+        if (!description) {
             res.send(`Description is missing.`);
         }
         //method starts only after all the items are passed;
-        if(slug && title && description){
-        console.log('  inside post issues');
-        const results = await issues.add(title, description, slug);
-        res.end(`POST: ${title}, ${description}`);
+        if (slug && title && description) {
+            console.log('  inside post issues');
+            try {
+                const results = await issues.add(title, description, slug);
+                res.end(`POST: ${title}, ${description}`);
+            } catch (ex) {
+                console.log("=== Exception issues::add");
+                return res.status(500).json({ error: ex })
+            }
         }
-    }  
+    }
 
     return {
         getController,
@@ -63,6 +106,6 @@ module.exports = () => {
         postController,
         putController,
         IssueComments,
-        
-}
+
+    }
 }

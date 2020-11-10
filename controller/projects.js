@@ -1,55 +1,84 @@
 const projects = require('../model/projects.js')();
 
 module.exports = () => {
-    
+
     const getController = async (req, res) => {
-        res.json( await projects.get());
-    };
-    
-    const getBySlug = async (req, res) => {
-        const result = await projects.get(req.params.slug);
-        //check if the project exists
-        if(result == null){
-            res.status(404).json({
-                error: 404,
-                message: 'Project not found',
-            });
-        }else {
-            res.json(result);
+        const { projectsList, error } = await projects.get();
+        if (error) {
+            return res.status(500).json({ error })
+        } else {
+            res.json({ projects: projectsList });
         }
     };
-    
+
+    const getBySlug = async (req, res) => {
+        try {
+            const projectsList = await projects.get(req.params.slug);
+            //check if project exists
+            if (projectsList == null) {
+                res.status(404).json({
+                    error: 404,
+                    message: 'Project not found',
+                });
+            } else {
+                res.json(projectsList);
+            }
+        } catch (ex) {
+            console.log("=== Exception projects::getBySlug.");
+            return res.status(500).json({ error: ex })
+        }
+    };
+
     //aggregating projects and their issues;
     const projectIssues = async (req, res) => {
-        res.json(await projects.aggregateWithIssues(req.params.slug));
+        try {
+            const projectsList = await projects.aggregateWithIssues(req.params.slug);
+            //check if project exists
+            if (projectsList == null) {
+                res.status(404).json({
+                    error: 404,
+                    message: 'Project not found',
+                });
+            } else {
+                res.json(projectsList);
+            }
+        } catch (ex) {
+            console.log("=== Exception projects::projectIssues.");
+            return res.status(500).json({ error: ex })
+        }
     };
-    
+
     const postController = async (req, res) => {
         const slug = req.body.slug;
-        if (!slug){
+        if (!slug) {
             res.send(`Slug is missing.`);
         }
         const name = req.body.name;
-        if (!name){
+        if (!name) {
             res.send(`Name is missing.`);
         }
         const description = req.body.description;
-        if (!description){
+        if (!description) {
             res.send(`Description is missing.`);
         }
         //method starts only after all the items are passed;
-        if(slug && name && description){
+        if (slug && name && description) {
             console.log('  inside post projects');
-            const results = await projects.add(slug, name, description);
-            //check if SLUG is unique;
-            if(results != null){
-                res.end(`POST: ${slug}, ${name}, ${description}`);
-            }else {
-                res.end(`Error: ${slug} already exists.`);
+            try {
+                const results = await projects.add(slug, name, description);
+                //check if SLUG is unique;
+                if (results != null) {
+                    res.end(`POST: ${slug}, ${name}, ${description}`);
+                } else {
+                    res.end(`Error: ${slug} already exists.`);
+                }
+            } catch (ex) {
+                console.log("=== Exception projects::add");
+                return res.status(500).json({ error: ex })
             }
         }
     };
-    
+
     return {
         getController,
         getBySlug,

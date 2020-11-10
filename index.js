@@ -6,10 +6,10 @@ let userLogged = null;
 const hostname = '0.0.0.0';
 const port = process.env.PORT || 3000;
 
-const projectsController = require ('./controller/projects')();
-const usersController = require ('./controller/users')();
-const issuesController = require ('./controller/issues')();
-const commentsController = require ('./controller/comments')();
+const projectsController = require('./controller/projects')();
+const usersController = require('./controller/users')();
+const issuesController = require('./controller/issues')();
+const commentsController = require('./controller/comments')();
 
 const app = module.exports = express();
 
@@ -26,24 +26,24 @@ app.use(async (req, res, next) => {
     };
     const key = req.headers["x-api-key"];
     const clientIp = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-    
-    if(!key){
-        console.log("   [%s] FAILED AUTHENTICATION -- %s, No key supplied", 
-        new Date(), clientIp);
+
+    if (!key) {
+        console.log("   [%s] FAILED AUTHENTICATION -- %s, No key supplied",
+            new Date(), clientIp);
         FailedAuthMessage.code = "01";
         return res.status(401).json(FailedAuthMessage);
-    }else{
-        
+    } else {
+
         userLogged = await users.getByKey(key);
-        
-        if(!userLogged){
-            console.log("   [%s] FAILED AUTHENTICATION -- %s, No user found", 
-            new Date(), clientIp);
+
+        if (!userLogged) {
+            console.log("   [%s] FAILED AUTHENTICATION -- %s, No user found",
+                new Date(), clientIp);
             FailedAuthMessage.code = "02";
             return res.status(401).json(FailedAuthMessage);
-        }else{    
+        } else {
             //save the email logged;
-            req.user = userLogged;   
+            req.user = userLogged;
             next();
         }
     }

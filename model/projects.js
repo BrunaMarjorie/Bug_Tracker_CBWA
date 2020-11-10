@@ -3,63 +3,95 @@ const COLLECTION = 'projects';
 
 module.exports = () => {
     const get = async (slug = null) => {
-        console.log('   inside projects');
-        if(!slug){
-            const projects = await db.get(COLLECTION);
-            return projects; 
-        }else{
+        console.log('   inside model projects');
+        if (!slug) {
+            try {
+                const projects = await db.get(COLLECTION);
+                return { projectsList: projects };
+            } catch (ex) {
+                console.log("=== Exception projects::get");
+                return { error: ex };
+            }
+        } else {
             //set slug in uppercase;
             slug = slug.toUpperCase();
-            const projects = await db.get(COLLECTION, {slug});
-            //check if the project exists;           
-            if(projects.length != 0){
-                return projects;
-                
-            }else {
-                return null;
-            }  
-        }    
+            try {
+                const projects = await db.get(COLLECTION, { slug });
+                //check if the project exists;           
+                if (projects.length != 0) {
+                    return { projects };
+                } else {
+                    return null;
+                }
+            } catch (ex) {
+                console.log("=== Exception projects::get{slug}");
+                return { error: ex };
+            }
+        }
     }
-    
+
     const add = async (slug, name, description) => {
         //set slug in uppercase;
         slug = slug.toUpperCase();
-        //check if slug is unique;
-        const valid = await db.find(COLLECTION, { slug });
-        if(!valid){
-            const results = await db.add(COLLECTION, {
-                slug: slug,
-                name: name,
-                description: description
-            });
-            return  results.result;
-        }else {
-            return null; 
+        let valid;
+        try {
+            //check if slug is unique;
+            valid = await db.find(COLLECTION, { slug });
+        } catch (ex) {
+            console.log("=== Exception user::find{email}");
+            return { error: ex };
+        }
+        if (!valid) {
+            try {
+                const results = await db.add(COLLECTION, {
+                    slug: slug,
+                    name: name,
+                    description: description
+                });
+                return results.result;
+            } catch (ex) {
+                console.log("=== Exception projects::add");
+                return { error: ex };
+            }
+        } else {
+            return null;
         }
     }
-    
+
     const aggregateWithIssues = async (slug) => {
         slug = slug.toUpperCase();
         const LOOKUP_ISSUES_PIPELINE = [
             //filter the project;
-            {   $match: {
-                'slug': slug,
-            }},
-            {   $lookup: {
-                from: 'issues',
-                localField: '_id',
-                foreignField: 'project_id',
-                as: 'issues',
+            {
+                $match: {
+                    'slug': slug,
+                }
             },
-        },
-    ];
-    const projects = await db.aggregate(COLLECTION, LOOKUP_ISSUES_PIPELINE);
-    return projects;
-}
+            {
+                $lookup: {
+                    from: 'issues',
+                    localField: '_id',
+                    foreignField: 'project_id',
+                    as: 'issues',
+                },
+            },
+        ];
+        try {
+            const projects = await db.aggregate(COLLECTION, LOOKUP_ISSUES_PIPELINE);
+            if (projects.length != 0) {
+                return ({ projects });
+            } else {
+                return null;
+            }
+        } catch (ex) {
+            console.log("=== Exception projects::aggregate");
+            return { error: ex };
+        }
+    }
 
-return {
-    get,
-    add,
-    aggregateWithIssues,
-}
+    return {
+        get,
+        add,
+        aggregateWithIssues,
+    }
 }
