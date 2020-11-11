@@ -1,61 +1,26 @@
-const comments = require('../model/comments.js')();
+const watchers = require('../model/watchers.js')();
 const db = require('../db')();
-const COLLECTION = 'comments';
+const COLLECTION = 'watchers';
 
 module.exports = () => {
 
     const getController = async (req, res) => {
-        const { commentsList, error } = await comments.get();
+        const { watchersList, error } = await watchers.get();
         if (error) {
             return res.status(500).json({ error })
         } else {
-            res.json({ comments: commentsList });
-        }
-    }
-
-    const getById = async (req, res) => {
-        const issueNumber = req.params.issueNumber;
-        let valid;
-        try {
-            //check if issue exists;
-            valid = await db.find('issues', { issueNumber });
-        } catch (ex) {
-            console.log("=== Exception comments::get");
-            return { error: ex };
-        };
-        if (!valid) {
-            res.status(404).json({
-                error: 404,
-                message: 'Issue not found.',
-            });
-        }
-        const id = parseInt(req.params.id);
-        try {
-            const result = await comments.get(issueNumber, id);
-            //check if comments exists;
-            if (result == null) {
-                res.status(404).json({
-                    error: 404,
-                    message: 'Comment not found.',
-                });
-            } else {
-                res.json(result);
-            }
-        } catch (ex) {
-            console.log("=== Exception comment::getById.");
-            return res.status(500).json({ error: ex });
+            res.json({ watchers: watchersList });
         }
     }
 
     const getByAuthor = async (req, res) => {
         const issueNumber = null;
-        const id = null;
         const author = req.params.author;
         let watch;
         try {
-            watch = await db.find(COLLECTION, {author});
+            watch = await db.find(COLLECTION, { author });
         } catch (ex) {
-            console.log("=== Exception comments::find.");
+            console.log("=== Exception watchers::find.");
             return res.status(500).json({ error: ex });
         } if (!watch) {
             res.status(404).json({
@@ -64,18 +29,18 @@ module.exports = () => {
             });
         } else {
             try {
-                const result = await comments.get(issueNumber, id, author);
-                //check if the author has comments;
+                const result = await watchers.get(issueNumber, author);
+                //check if the author is watching;
                 if (result == null) {
                     res.status(404).json({
                         error: 404,
-                        message: 'Comments not found for this author.',
+                        message: 'Author is not watching any issue.',
                     });
                 } else {
                     res.json(result);
                 }
             } catch (ex) {
-                console.log("=== Exception comment::getByAuthor.");
+                console.log("=== Exception watchers::getByAuthor.");
                 return res.status(500).json({ error: ex });
             }
         }
@@ -88,23 +53,23 @@ module.exports = () => {
             //check if issueNumber exists;
             valid = await db.find('issues', { issueNumber });
         } catch (ex) {
-            console.log("=== Exception comments::find");
+            console.log("=== Exception watchers::find");
             return res.status(500).json({ error: ex });
         };
         if (valid) { //loop if any issueNumber is valid;
             try {
-                const result = await comments.get(req.params.issueNumber);
+                const result = await watchers.get(req.params.issueNumber);
                 //check if the issue has comments;
                 if (result == null) {
                     res.status(404).json({
                         error: 404,
-                        message: 'Comments not found for this issue.',
+                        message: 'No watchers found for this issue.',
                     });
                 } else {
                     res.json(result);
                 }
             } catch (ex) {
-                console.log("=== Exception comment::getByIssue.");
+                console.log("=== Exception watchers::getByIssue.");
                 return res.status(500).json({ error: ex });
             }
         } else { //loop is issueNumber is not valid;
@@ -134,27 +99,21 @@ module.exports = () => {
         }
         //call the logged user;
         const author = req.user;
-        const text = req.body.text;
-        if (!text) {
-            res.send(`Text is missing.`);
-        } else {
-            //method starts only after all the items are passed;
-            console.log('  inside post comments');
-            try {
-                const results = await comments.add(text, author, issueNumber);
-                res.end(`POST: ${text}`);
-            } catch (ex) {
-                console.log("=== Exception comments::add");
-                return res.status(500).json({ error: ex })
-            }
+        console.log('  inside post watchers');
+        try {
+            const results = await watchers.add(author, issueNumber);
+            res.end(`POST: ${author} is now a watcher of ${issueNumber}`);
+        } catch (ex) {
+            console.log("=== Exception comments::add");
+            return res.status(500).json({ error: ex })
         }
     }
+
 
     return {
         getController,
         getByAuthor,
         getByIssue,
-        getById,
         postController,
     }
 }

@@ -59,6 +59,7 @@ module.exports = () => {
     }
 
     const aggregateWithIssues = async (slug) => {
+        mail.dateUpdate();
         slug = slug.toUpperCase();
         const LOOKUP_ISSUES_PIPELINE = [
             //filter the project;

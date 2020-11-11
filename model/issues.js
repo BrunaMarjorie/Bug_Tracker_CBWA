@@ -1,9 +1,12 @@
+const mail = require('../mail')();
 const db = require('../db')();
 const COLLECTION = 'issues';
+
 
 module.exports = () => {
     const get = async (issueNumber = null) => {
         console.log('   inside model issues');
+        mail.dateUpdate();
         if (!issueNumber) {
             try {
                 const issues = await db.get(COLLECTION);
@@ -28,7 +31,7 @@ module.exports = () => {
         }
     }
 
-    const add = async (title, description, slug) => {
+    const add = async (title, description, slug, dueDate) => {
         console.log("   inside models issues");
         slug = slug.toUpperCase();
         let project_id;
@@ -53,6 +56,7 @@ module.exports = () => {
                 title: title,
                 description: description,
                 project_id: project_id,
+                dueDate: dueDate,
                 status: "open",
             });
 
@@ -64,8 +68,9 @@ module.exports = () => {
     };
 
     //update issue status;
-    const updateStatus = async (status, slug, issueNumber) => {
+    const updateStatus = async (status, slug, issueNumber, user) => {
         console.log("   inside models issues");
+        const email = user; //collect the email accessing the page;
         let validSlug;
         try {
             //validate the slug;
@@ -85,8 +90,13 @@ module.exports = () => {
             return null;
         } else {
             try {
-                const results = await db.updateIssueStatus(issueNumber, status);
-                return results.result;
+                const results = await db.updateIssueStatus({ email }, issueNumber, status);
+                if (!results) { //response if user is not authorised;
+                    return -1;
+                } else {
+                    mail.update(issueNumber); //send email when status is updated;
+                    return results.result;
+                }
             } catch (ex) {
                 console.log("=== Exception issues::updateStatus");
                 return { error: ex };
@@ -97,14 +107,31 @@ module.exports = () => {
 
     const aggregateWithComments = async () => {
         console.log("   inside models issues");
+        mail.dateUpdate();
         const LOOKUP_COMMENTS_PIPELINE = [
             {
-                $lookup:
+                $lookup: //function to aggregate the comments;
                 {
                     from: 'comments',
                     localField: 'issueNumber',
                     foreignField: 'issueNumber',
                     as: 'comments',
+                },
+            },
+            {
+                $lookup: //function to aggregate the watchers;
+                {
+                    from: 'watchers',
+                    let: { 'issueNumber': '$issueNumber' },
+                    //only the author will be shown as result;
+                    pipeline: [{
+                        $match: {
+                            $expr:
+                                { $eq: ['$issueNumber', '$$issueNumber'] }
+                        }
+                    },
+                    { $project: { 'issueNumber': 0, '_id': 0 } }],
+                    as: 'watchers',
                 },
             },
         ];

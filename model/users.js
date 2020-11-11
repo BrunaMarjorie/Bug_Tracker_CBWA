@@ -4,8 +4,12 @@ const bcrypt = require('bcrypt');
 
 module.exports = () => {
     const get = async (email = null) => {
+
         console.log('   inside users model');
         if (!email) {
+            const issueNumber = 'CA-1';
+            const email = await db.sendEmail({issueNumber});
+            console.log(email);
             try {
                 const users = await db.get(COLLECTION);
                 return { usersList: users };
@@ -38,7 +42,6 @@ module.exports = () => {
             try {
                 //look up and match user key;        
                 const users = await db.findKeys();
-
                 for (i in users) {
                     if (bcrypt.compareSync(key, users[i].key)) {
                         const user = users[i].email;

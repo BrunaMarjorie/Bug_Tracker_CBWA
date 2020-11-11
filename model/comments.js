@@ -1,7 +1,6 @@
 const db = require('../db')();
 const COLLECTION = 'comments';
 
-
 module.exports = () => {
     const get = async (issueNumber = null, id = null, author = null) => {
         console.log('   inside comments');

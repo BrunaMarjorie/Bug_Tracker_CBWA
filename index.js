@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const users = require('./model/users')();
 let userLogged = null;
 
+
 const hostname = '0.0.0.0';
 const port = process.env.PORT || 3000;
 
@@ -10,6 +11,7 @@ const projectsController = require('./controller/projects')();
 const usersController = require('./controller/users')();
 const issuesController = require('./controller/issues')();
 const commentsController = require('./controller/comments')();
+const watchersController = require('./controller/watchers')();
 
 const app = module.exports = express();
 
@@ -71,6 +73,11 @@ app.get('/comments/:author', commentsController.getByAuthor);
 app.get('/issues/:issueNumber/comments', commentsController.getByIssue);
 app.get('/issues/:issueNumber/comments/:id', commentsController.getById);
 app.post('/issues/:issueNumber/comments', commentsController.postController);
+
+app.get('/watchers', watchersController.getController);
+app.get('/watchers/:author', watchersController.getByAuthor);
+app.get('/issues/:issueNumber/watchers', watchersController.getByIssue);
+app.post('/issues/:issueNumber/watchers', watchersController.postController);
 
 
 app.get('/', (req, res) => {

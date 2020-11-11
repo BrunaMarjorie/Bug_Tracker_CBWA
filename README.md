@@ -1,17 +1,16 @@
 # Project Name
 BUG_TRACKER_CBWA is an API developed to track bugs in projects, allowing users to insert their issues and comments.
 
-## Table of contents
-* [General info] (#general-info)
-* Screenshots
-* Technologies
-* Setup
-* Features
-* Status
-* Inspiration
-* Contact
+## Table of Contents
+* [General info](#general-info)
+* [Screenshots](#screenshots)
+* [Technologies](#technologies)
+* [Setup](#setup)
+* [Features](#features)
+* [Status](#status)
+* [Inspiration](#inspiration)
+* [Contact](#contact)
 
-<a name="general-info"></a>
 ## General info
 This project is the result of my Cloud-based Web Application subject in college. 
 
@@ -50,4 +49,4 @@ Project is: in progress, finished, no longer continue and why?
 Add here credits. Project inspired by..., based on...
 
 ## Contact
-Created by https://github.com/BrunaMarjorie - feel free to contact me!
+Created by [Bruna Marjorie](https://github.com/BrunaMarjorie) - feel free to contact me!
