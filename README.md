@@ -1,5 +1,5 @@
 # Project Name
-BUG_TRACKER_CBWA is an API developed to track bugs in projects, allowing users to insert their issues and comments.
+BUG_TRACKER_CBWA 
 
 ## Table of Contents
 * [General info](#general-info)
@@ -12,7 +12,7 @@ BUG_TRACKER_CBWA is an API developed to track bugs in projects, allowing users t
 * [Contact](#contact)
 
 ## General info
-This project is the result of my Cloud-based Web Application subject in college. 
+This is an API developed to track bugs in projects, allowing users to insert their issues and comments and send e-mail notifications to users.
 
 ## Screenshots
 Example screenshot
@@ -23,10 +23,11 @@ Example screenshot
 * Express - version 4.17.1
 * Body-parser - version 1.19.0
 * Bcrypt - version 5.0.0
-* Mongodb - version 3.6.2   
+* Mongodb - version 3.6.2
+* Nodemailer - version 6.4.15   
 
-## Setup
-Describe how to install / setup your local environement / add link to demo version.
+## How to Use
+To clone and run this application, you'll need Git and Node.js (which comes with npm) installed on your computer.
 
 ## Code Examples
 Show examples of usage: put-your-code-here
@@ -46,7 +47,7 @@ Wow improvement to be done 2
 Project is: in progress, finished, no longer continue and why?
 
 ## Inspiration
-Add here credits. Project inspired by..., based on...
+This project is the result of my Cloud-based Web Application subject in college. 
 
 ## Contact
 Created by [Bruna Marjorie](https://github.com/BrunaMarjorie) - feel free to contact me!

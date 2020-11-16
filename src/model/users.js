@@ -7,9 +7,6 @@ module.exports = () => {
 
         console.log('   inside users model');
         if (!email) {
-            const issueNumber = 'CA-1';
-            const email = await db.sendEmail({issueNumber});
-            console.log(email);
             try {
                 const users = await db.get(COLLECTION);
                 return { usersList: users };
