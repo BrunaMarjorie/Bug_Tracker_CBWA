@@ -3,9 +3,9 @@ BUG_TRACKER_CBWA
 
 ## Table of Contents
 * [General info](#general-info)
-* [Screenshots](#screenshots)
 * [Technologies](#technologies)
 * [Setup](#setup)
+* [Example Usage](#example-usage)
 * [Features](#features)
 * [Status](#status)
 * [Inspiration](#inspiration)
@@ -24,22 +24,17 @@ This is an API developed to track bugs in projects, allowing users to insert the
 * Nodemailer - version 6.4.15  
 * Handlebars - version 4.1.1 
 
-## How to Use
+## Setup
 To clone and run this application, you'll need Git and Node.js (which comes with npm) installed on your computer.
 
-## Code Examples
-const express = require('express');
+## Example Usage
 
-const bodyParser = require('body-parser');
+Route example for watchers:
 
-const users = require('./model/users')();
-
-const path = require('path');
-
-
-const hostname = '0.0.0.0';
-
-const port = process.env.PORT || 3000;
+- Get all watchers:	{GET}	/watchers
+- Get all issues watched by an author:	{GET}	/watchers/:email
+- Get all watchers for an issue:	{GET}	/issues/:issueNumber/watchers
+- Add new watchers: 	{POST}	/issues/:issueNumber/watchers	
 
 ## Features
 List of features ready and for future development
