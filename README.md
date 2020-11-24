@@ -29,13 +29,16 @@ To clone and run this application, you'll need Git and Node.js (which comes with
 
 ## Code Examples
 const express = require('express');
+
 const bodyParser = require('body-parser');
+
 const users = require('./model/users')();
+
 const path = require('path');
-let userLogged = null;
 
 
 const hostname = '0.0.0.0';
+
 const port = process.env.PORT || 3000;
 
 ## Features
