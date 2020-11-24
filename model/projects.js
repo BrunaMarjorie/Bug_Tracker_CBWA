@@ -1,4 +1,5 @@
 const db = require('../db')();
+const mail = require('../mail')();
 const COLLECTION = 'projects';
 
 module.exports = () => {

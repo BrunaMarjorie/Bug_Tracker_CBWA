@@ -32,6 +32,8 @@ module.exports = () => {
 
     const get = (collectionName, query = {}) => {
         return new Promise((resolve, reject) => {
+            console.log(uri);
+            
             MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
                 if (err) {
                     console.log(err);
