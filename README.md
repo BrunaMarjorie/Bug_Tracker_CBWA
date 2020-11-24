@@ -14,9 +14,6 @@ BUG_TRACKER_CBWA
 ## General info
 This is an API developed to track bugs in projects, allowing users to insert their issues and comments and send e-mail notifications to users.
 
-## Screenshots
-Example screenshot
-
 ## Technologies
 * Node - version 12.18.3
 * Nodemon - version 2.0.6
@@ -24,27 +21,35 @@ Example screenshot
 * Body-parser - version 1.19.0
 * Bcrypt - version 5.0.0
 * Mongodb - version 3.6.2
-* Nodemailer - version 6.4.15   
+* Nodemailer - version 6.4.15  
+* Handlebars - version 4.1.1 
 
 ## How to Use
 To clone and run this application, you'll need Git and Node.js (which comes with npm) installed on your computer.
 
 ## Code Examples
-Show examples of usage: put-your-code-here
+const express = require('express');
+const bodyParser = require('body-parser');
+const users = require('./model/users')();
+const path = require('path');
+let userLogged = null;
+
+
+const hostname = '0.0.0.0';
+const port = process.env.PORT || 3000;
 
 ## Features
-List of features ready and TODOs for future development
+List of features ready and for future development
 
-Awesome feature 1
-Awesome feature 2
-Awesome feature 3
+- Update issue status when date is due;
+- Send email to watchers list when issue is updated;
+
 To-do list:
 
-Wow improvement to be done 1
-Wow improvement to be done 2
+- Frontend needs to be improved.
 
 ## Status
-Project is: in progress, finished, no longer continue and why?
+Project is: in progress. 
 
 ## Inspiration
 This project is the result of my Cloud-based Web Application subject in college. 
