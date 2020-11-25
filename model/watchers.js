@@ -16,7 +16,7 @@ module.exports = () => {
         } else if (issueNumber && !author) {
             try {
                 const watchers = await db.get(COLLECTION, { issueNumber });
-                //check if the issue has comments;           
+                //check if the issue has watchers;           
                 if (watchers.length != 0) {
                     return { watchersList: watchers };
                 } else {
@@ -29,7 +29,7 @@ module.exports = () => {
         } else if (!issueNumber && author) {
             try {
                 const watchers = await db.get(COLLECTION, { author });
-                //check if the author has comments;           
+                //check if the author is watching any issue;           
                 if (watchers.length != 0) {
                     return { watchersList: watchers };
                 } else {

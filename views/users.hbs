@@ -34,12 +34,30 @@
   </nav>
   <div class="container">
     <h2>{{text}}</h2>
-    <div class="list-group">
-      <ul>
-        {{#each users}}
-        <li>{{name}}</li>
-        {{/each}}
-      </ul>
+    <div class="row">
+      {{#each users}}
+      <div class="col-md-4">
+        <div class="list-group">
+          <ul>
+            <li>{{name}}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="list-group">
+          <ul>
+            <a href="/comments/{{email}}"> Comments </a>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="list-group">
+          <ul>
+            <a href="/watchers/{{email}}"> Watching </a>
+          </ul>
+        </div>
+      </div>
+      {{/each}}
     </div>
   </div>
 </body>
