@@ -72,13 +72,13 @@ app.post('/projects/:slug/issues', issuesController.postController);
 app.put('/projects/:slug/issues/:issueNumber', issuesController.putController);
 
 app.get('/comments', commentsController.getController);
-app.get('/comments/:author', commentsController.getByAuthor);
+//app.get('/comments/:author', commentsController.getByAuthor);
 //app.get('/issues/:issueNumber/comments', commentsController.getByIssue);
 app.get('/issues/:issueNumber/comments/:id', commentsController.getById);
 app.post('/issues/:issueNumber/comments', commentsController.postController);
 
 app.get('/watchers', watchersController.getController);
-app.get('/watchers/:author', watchersController.getByAuthor);
+//app.get('/watchers/:author', watchersController.getByAuthor);
 //app.get('/issues/:issueNumber/watchers', watchersController.getByIssue);
 app.post('/issues/:issueNumber/watchers', watchersController.postController);
 
@@ -178,12 +178,34 @@ app.get('/issues/:issueNumber/comments', async (req, res) => {
     }
 });
 
+//page shows the comments for an user
+app.get('/comments/:author', async (req, res) => {
+    try {
+        const { commentsList } = await commentsModel.get(null, null, req.params.author);
+        console.log(commentsList);
+        res.render('user_comments', { comments: commentsList });
+    } catch (e) {
+        res.render('error');
+    }
+});
+
 //page shows the watchers for an issue
 app.get('/issues/:issueNumber/watchers', async (req, res) => {
     try {
         const watchersList = await watchersModel.get(req.params.issueNumber);
         console.log(watchersList);
         res.render('watchers', watchersList);
+    } catch (e) {
+        res.render('error');
+    }
+});
+
+//page shows the comments for an user
+app.get('/watchers/:author', async (req, res) => {
+    try {
+        const watchersList = await watchersModel.get(null, req.params.author);
+        console.log(watchersList);
+        res.render('user_watching', watchersList);
     } catch (e) {
         res.render('error');
     }
